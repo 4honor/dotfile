@@ -1,0 +1,25 @@
+# anaconda-mode
+jedi
+json-rpc
+service_factory
+
+# format
+black
+
+# importmagic
+epc
+importmagic
+
+# remove unused import
+autoflake
+
+
+# sort import
+isort==4.3.21
+
+# syntax & semantic checkers
+pylint
+flake8
+
+# test runner
+pytest
