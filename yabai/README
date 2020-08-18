@@ -129,11 +129,11 @@
        hyper - l: yabai -m window --space next && yabai -m space --focus next
 
        meh - 1: yabai -m window --space 1 && yabai -m space --focus 1
-       meh - 2: yabai -m window --space 1 && yabai -m space --focus 2
-       meh - 3: yabai -m window --space 1 && yabai -m space --focus 3
-       meh - 4: yabai -m window --space 1 && yabai -m space --focus 4
-       meh - 5: yabai -m window --space 1 && yabai -m space --focus 5
-       meh - 6: yabai -m window --space 1 && yabai -m space --focus 6
+       meh - 2: yabai -m window --space 2 && yabai -m space --focus 2
+       meh - 3: yabai -m window --space 3 && yabai -m space --focus 3
+       meh - 4: yabai -m window --space 4 && yabai -m space --focus 4
+       meh - 5: yabai -m window --space 5 && yabai -m space --focus 5
+       meh - 6: yabai -m window --space 6 && yabai -m space --focus 6
 
        # Zoom
        hyper - m: yabai -m window --toggle zoom-fullscreen
