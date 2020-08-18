@@ -1,0 +1,222 @@
+;;; -*- mode: org; -*-
+
+* Yabai: Tiling Window
+1. Install =yabai= and =skdh=
+
+   - Disable =crsutil=
+
+     1. Restart your Mac, and press =Cmd-R= when booting
+     2. Open =Terminal=, and enter:
+        #+begin_src sh
+          crsutil enable --without debug --without fs
+          crsutil status
+        #+end_src
+     3. Restart and login
+
+   - Install =yabai= and =skdh=
+
+     #+begin_src sh
+       brew install koekeishiya/formulae/yabai
+       brew install koekeishiya/formulae/skhd
+     #+end_src
+
+   - Enable services
+
+     #+begin_src sh
+       sudo yabai --install-sa
+       brew services start yabai
+       killall Dock
+
+       brew services start skhd
+     #+end_src
+
+2. Configure =yabai= and =skdh=
+
+   - Edit =~/.yabairc=, then restart =yabai=
+
+     #+begin_src sh
+       #!/usr/bin/env sh
+
+       # global settings
+       yabai -m config mouse_follows_focus          on
+       yabai -m config focus_follows_mouse          autoraise
+       yabai -m config window_placement             second_child
+       yabai -m config window_opacity               off
+       yabai -m config insert_feedback_color        0xffd75f5f
+       yabai -m config split_ratio                  0.50
+       yabai -m config auto_balance                 on
+       yabai -m config mouse_modifier               fn
+       yabai -m config mouse_action1                move
+       yabai -m config mouse_action2                resize
+
+       # border
+       yabai -m config window_border                off
+
+       # general space settings
+       yabai -m config layout                       bsp
+       yabai -m config top_padding                  5
+       yabai -m config bottom_padding               5
+       yabai -m config left_padding                 5
+       yabai -m config right_padding                5
+       yabai -m config window_gap                   5
+
+       # float window
+       yabai -m config window_topmost               off
+       yabai -m config window_shadow                off
+
+       # Coding
+       yabai -m rule --add app="^iTerm2$"     display=$(yabai -m query --displays | jq -r '.[-1].index')
+       yabai -m rule --add app="^Emacs$"      display=$(yabai -m query --displays | jq -r '.[-1].index')
+
+       # Unmanaged
+       yabai -m rule --add app="^System Preferences$" space=1 manage=off
+       yabai -m rule --add app="^WeChat$"             space=1 grid=1:1:0:0:1:1 manage=off
+       yabai -m rule --add app="^YoudaoDict"          manage=off
+
+       # Refresh
+       yabai -m signal --add event=display_removed action="launchctl kickstart -k \"gui/${UID}/homebrew.mxcl.yabai\""
+       yabai -m signal --add event=display_added   action="launchctl kickstart -k \"gui/${UID}/homebrew.mxcl.yabai\""
+
+       echo "yabai configuration loaded.."
+     #+end_src
+
+   - Edit =~/.skhdrc=
+
+     #+begin_src sh
+       ##----------------------------------------------------------------------
+       ## Display
+
+       # Focus display alternatively
+       hyper - d: yabai -m display --focus recent
+
+       ##----------------------------------------------------------------------
+       ## Space
+
+       # Move space left / right
+       hyper - j: yabai -m space --move prev
+       hyper - k: yabai -m space --move next
+
+       # Switch layout (bsp|float)
+       hyper - b: yabai -m space --layout bsp
+       hyper - f: yabai -m space --layout float
+
+       # Focus
+       hyper - 1: yabai -m space --focus 1
+       hyper - 2: yabai -m space --focus 2
+       hyper - 3: yabai -m space --focus 3
+       hyper - 4: yabai -m space --focus 4
+       hyper - 5: yabai -m space --focus 5
+       hyper - 6: yabai -m space --focus 6
+
+       # Balance
+       hyper - 0: yabai -m space --balance
+
+       # Rotate
+       hyper - 9: yabai -m space --rotate 90
+
+       ##----------------------------------------------------------------------
+       ## Window
+
+       # Focus
+       hyper - x: yabai -m window --focus recent
+
+       # Swap
+       hyper - up: yabai -m window --swap west
+       hyper - down: yabai -m window --swap east
+
+       # Send
+       hyper - h: yabai -m window --space prev && yabai -m space --focus prev
+       hyper - l: yabai -m window --space next && yabai -m space --focus next
+
+       meh - 1: yabai -m window --space 1 && yabai -m space --focus 1
+       meh - 2: yabai -m window --space 1 && yabai -m space --focus 2
+       meh - 3: yabai -m window --space 1 && yabai -m space --focus 3
+       meh - 4: yabai -m window --space 1 && yabai -m space --focus 4
+       meh - 5: yabai -m window --space 1 && yabai -m space --focus 5
+       meh - 6: yabai -m window --space 1 && yabai -m space --focus 6
+
+       # Zoom
+       hyper - m: yabai -m window --toggle zoom-fullscreen
+       hyper - z: yabai -m window --toggle zoom-parent
+
+       ##----------------------------------------------------------------------
+       ## Miscs
+
+       # Toggle
+       hyper - v: yabai -m window --toggle split
+       hyper - t: yabai -m window --toggle topmost
+       hyper - space: yabai -m window --toggle float
+       hyper - s: yabai -m window --toggle sticky
+
+       # Float & center
+       hyper - c: yabai -m window --toggle float && \
+           yabai -m window --grid 4:4:1:1:2:2
+
+       # PIP
+       hyper - p: yabai -m window --toggle float && \
+           yabai -m window --toggle pip
+
+       ##----------------------------------------------------------------------
+       # Restart yabai
+       hyper - g : bash -c 'launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai"'
+
+     #+end_src
+
+3. Shortcuts
+
+   | Shortcut        | Command                                                 | Description                             |
+   |-----------------+---------------------------------------------------------+-----------------------------------------|
+   | hyper - d       | yabai -m display --focus recent                         | Switch focus between displays           |
+   |-----------------+---------------------------------------------------------+-----------------------------------------|
+   | hyper - j/k     | yabai -m space --move prev/next                         | Move space forward/backward             |
+   | hyper - b/f     | yabai -m space --layout bsp/float                       | Switch space layout: bsp/float          |
+   | hyper - [1..6]  | yabai -m space --focus [1..6]                           | Move focus to space [1..6]              |
+   | hyper - 0       | yabai -m space --balance                                | Balance all windows in current space    |
+   | hyper - 9       | yabai -m space --rotate 90                              | Rotate all for windows 90 degree        |
+   |-----------------+---------------------------------------------------------+-----------------------------------------|
+   | hyper - x       | yabai -m window --focus recent                          | Cycle focus in windows of current space |
+   | hyper - up/down | yabai -m window --swap west/east                        | Swap windows                            |
+   |-----------------+---------------------------------------------------------+-----------------------------------------|
+   | hyper - h/l     | yabai -m window --space prev/next                       | Move window to prev/next space          |
+   | meh - [1..6]    | yabai -m window --space [1..6]                          | Move window to space [1..6]             |
+   |-----------------+---------------------------------------------------------+-----------------------------------------|
+   | hyper - m       | yabai -m window --toggle zoom-fullscreen                | Zoom fullscreen                         |
+   | hyper - z       | yabai -m window --toggle zoom-parent                    | Zoom parent                             |
+   |-----------------+---------------------------------------------------------+-----------------------------------------|
+   | hyper - v       | yabai -m window --toggle split                          | Vertically split                        |
+   | hyper - t       | yabai -m window --toggle topmost                        | Toggle topmost                          |
+   | hyper - space   | yabai -m window --toggle float                          | Toggle float                            |
+   | hyper - s       | yabai -m window --toggle sticky                         | Toggle sticky                           |
+   |-----------------+---------------------------------------------------------+-----------------------------------------|
+   | hyper - c       | yabai -m window --toggle float && \                     | Float & center                          |
+   |                 | yabai -m window --grid 4:4:1:1:2:2                      |                                         |
+   |-----------------+---------------------------------------------------------+-----------------------------------------|
+   | hyper - p       | yabai -m window --toggle float && \                     | PIP                                     |
+   |                 | yabai -m window --toggle pip                            |                                         |
+   |-----------------+---------------------------------------------------------+-----------------------------------------|
+   | hyper - g       | launchctl kickstart -k "gui/${UID}/homebrew.mxcl.yabai" | Restart yabai                           |
+   |-----------------+---------------------------------------------------------+-----------------------------------------|
+
+4. Uninstall =yabai= and =skhd=
+
+   #+begin_src sh
+     # uninstall yabai & skhd
+     brew services stop yabai
+     sudo yabai --install-sa
+     brew uninstall yabai
+     killall Dock
+
+     brew services stop skhd
+     brew uninstall skhd
+
+     # clean
+     cd /usr/local/var/log/ && rm -r yabai
+     cd /usr/local/var/log/ && rm -r skhd
+     rm ~/.yabairc
+     rm ~/.skhdrc
+   #+end_src
+
+5. References
+
+   1. https://github.com/koekeishiya/dotfiles
+   2. https://github.com/koekeishiya/yabai/wiki

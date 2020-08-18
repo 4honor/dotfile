@@ -1,8 +1,8 @@
 #!/usr/bin/env sh
 
 # global settings
-yabai -m config mouse_follows_focus          off
-yabai -m config focus_follows_mouse          off
+yabai -m config mouse_follows_focus          on
+yabai -m config focus_follows_mouse          autoraise
 yabai -m config window_placement             second_child
 yabai -m config window_opacity               off
 yabai -m config insert_feedback_color        0xffd75f5f
@@ -14,9 +14,6 @@ yabai -m config mouse_action2                resize
 
 # border
 yabai -m config window_border                off
-yabai -m config window_border_width          6
-yabai -m config active_window_border_color   0xff5d2c63
-yabai -m config normal_window_border_color   0xff555555
 
 # general space settings
 yabai -m config layout                       bsp
@@ -30,18 +27,13 @@ yabai -m config window_gap                   5
 yabai -m config window_topmost               off
 yabai -m config window_shadow                off
 
-# Space Labeling
-yabai -m config --space 1 layout float
-
 # Coding
-yabai -m rule --add app="^iTerm2"     space=^4 || yabai -m rule --add app="^iTerm2"     space=^3
-yabai -m rule --add app="^Emacs"      space=^4 || yabai -m rule --add app="^Emacs"      space=^3
-yabai -m rule --add app="^Firefox"    space=^4 || yabai -m rule --add app="^Firefox"    space=^4
-yabai -m rule --add app="^Mail"       space=^1
+yabai -m rule --add app="^iTerm2$"     display=$(yabai -m query --displays | jq -r '.[-1].index')
+yabai -m rule --add app="^Emacs$"      display=$(yabai -m query --displays | jq -r '.[-1].index')
 
 # Unmanaged
-yabai -m rule --add app="^System Preferences$" manage=off
-yabai -m rule --add app="^WeChat$"             manage=off
+yabai -m rule --add app="^System Preferences$" space=1 manage=off
+yabai -m rule --add app="^WeChat$"             space=1 grid=1:1:0:0:1:1 manage=off
 yabai -m rule --add app="^YoudaoDict"          manage=off
 
 # Refresh
